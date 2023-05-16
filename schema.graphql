@@ -1,38 +1,48 @@
-type OwnershipTransferred @entity {
+type Transfer @entity(immutable: true) {
   id: ID!
-  previousOwner: Bytes! # address
-  newOwner: Bytes! # address
+  from: Owner!
+  to: Owner!
+  token: Token!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
 }
 
-type Paused @entity {
+type Token @entity {
   id: ID!
-  account: Bytes! # address
+  owner: Owner!
+  uri: String
+  number: BigInt!
+  transfers: [Transfer!]! @derivedFrom(field: "token")
+  metadata: TokenMetadata @derivedFrom(field: "token")
+  contract: Contract!
 }
 
-type ProductsPaid @entity {
+type TokenMetadata @entity {
   id: ID!
-  slicerAddresses: [Bytes]! # address[]
-  productIds: [BigInt]! # uint256[]
-  quantities: [BigInt]! # uint256[]
-  totalPaid: BigInt! # uint256
+  name: String!
+  identifier: BigInt!
+  description: String!
+  tags: [String!]!
+  image: String!
+  token: Token!
 }
 
-type TokenSliced @entity {
+type Owner @entity {
   id: ID!
-  slicerAddress: Bytes! # address
-  tokenId: BigInt! # uint256
-  payees: [Bytes]! # address[]
-  shares: [BigInt]! # uint256[]
+  ownedTokens: [Token!]! @derivedFrom(field: "owner")
+  balance: BigInt!
 }
 
-type TriggeredRelease @entity {
-  id: ID!
-  account: Bytes! # address
-  totalReleased: BigInt! # uint256
-  slicerPercentage: Int! # uint8
+type Contract @entity {
+  id: Bytes!
+  name: String
+  symbol: String
+  totalSupply: BigInt!
+  mintedTokens: [Token!]! @derivedFrom(field: "contract")
 }
 
-type Unpaused @entity {
+type DefifaNFT @entity {
   id: ID!
-  account: Bytes! # address
+  contract: Contract!
 }

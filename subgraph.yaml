@@ -1,38 +1,67 @@
-specVersion: 0.0.1
+specVersion: 0.0.4
 schema:
   file: ./schema.graphql
+description: 0.1.1
 dataSources:
-  - kind: ethereum/contract
-    name: Slice
-    network: rinkeby
+  - kind: ethereum
+    name: FairLunch
+    network: goerli
     source:
-      address: "0x0FD0d9aa44a05Ee158DDf6F01d7dcF503388781d"
-      abi: Slice
+      abi: FairLunch
+      address: "0xdc1b66c81663410e2C8aC06D613CFaeB9693aA3e"
+      startBlock: 7919957
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.2
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - OwnershipTransferred
-        - Paused
-        - ProductsPaid
-        - TokenSliced
-        - TriggeredRelease
-        - Unpaused
+        - Token
+        - TokenMetadata
+        - Owner
+        - Transfer
+        - Contract
       abis:
-        - name: Slice
-          file: ./abis/Slice.json
+        - name: FairLunch
+          file: ./abis/FairLunch.json
       eventHandlers:
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
-        - event: Paused(address)
-          handler: handlePaused
-        - event: ProductsPaid(address[],uint256[],uint256[],uint256)
-          handler: handleProductsPaid
-        - event: TokenSliced(address,uint256,address[],uint256[])
-          handler: handleTokenSliced
-        - event: TriggeredRelease(address,uint256,uint8)
-          handler: handleTriggeredRelease
-        - event: Unpaused(address)
-          handler: handleUnpaused
-      file: ./src/mapping.ts
+        - event: CrumbsWereSwept(indexed uint256,indexed uint256,uint256,uint256,address)
+          handler: handleCrumbsWereSwept
+        - event: LunchWasServed(indexed uint256,indexed uint256,uint256,uint256,uint256,address)
+          handler: handleLunchWasServed
+      file: ./src/mappings/fairlunch.ts
+templates:
+  - name: DefifaNFT
+    kind: ethereum/contract
+    network: goerli
+    source:
+      abi: DefifaNFT
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/defifa-nft.ts
+      entities:
+        - Token
+        - TokenMetadata
+        - Owner
+        - Transfer
+        - Contract
+      abis:
+        - name: DefifaNFT
+          file: ./abis/DefifaNFT.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+  - name: TokenMetadata
+    kind: file/ipfs
+    network: goerli
+    mapping:
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/metadata.ts
+      handler: handleMetadata
+      entities:
+        - TokenMetadata
+      abis:
+        - name: DefifaNFT
+          file: ./abis/DefifaNFT.json
