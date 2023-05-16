@@ -1,24 +1,9 @@
-import {
-  Address,
-  BigInt,
-  Bytes,
-  dataSource,
-  DataSourceContext,
-  ethereum,
-  json,
-  log
-} from "@graphprotocol/graph-ts"
+import { Address, BigInt, DataSourceContext } from "@graphprotocol/graph-ts"
 import {
   Transfer as TransferEvent,
   DefifaNFT
-} from "../../generated/DefifaNFT/DefifaNFT"
-import {
-  Transfer,
-  Owner,
-  Contract,
-  Token,
-  TokenMetadata
-} from "../../generated/schema"
+} from "../../generated/templates/DefifaNFT/DefifaNFT"
+import { Transfer, Owner, Contract, Token } from "../../generated/schema"
 import { TokenMetadata as TokenMetadataTemplate } from "../../generated/templates"
 
 export function handleTransfer(event: TransferEvent): void {
@@ -31,7 +16,7 @@ export function handleTransfer(event: TransferEvent): void {
   let tokenId = event.params.tokenId.toString()
   let to = getOrCreateOwner(event.params.to)
   let from = getOrCreateOwner(event.params.from)
-  let contract = Contract.load(event.address)
+  let contract = Contract.load(event.address.toHex())!
   let instance = DefifaNFT.bind(event.address)
   let token = Token.load(tokenId)
 
@@ -41,19 +26,6 @@ export function handleTransfer(event: TransferEvent): void {
   }
 
   to.balance = to.balance.plus(BigInt.fromI32(1))
-
-  if (contract == null) {
-    contract = new Contract(event.address)
-    contract.totalSupply = BigInt.fromI32(0)
-    let name = instance.try_name()
-    if (!name.reverted) {
-      contract.name = name.value
-    }
-    let symbol = instance.try_symbol()
-    if (!symbol.reverted) {
-      contract.symbol = symbol.value
-    }
-  }
 
   if (token == null) {
     token = new Token(tokenId)
@@ -70,6 +42,7 @@ export function handleTransfer(event: TransferEvent): void {
       )
     }
     contract.totalSupply = contract.totalSupply.plus(BigInt.fromI32(1))
+    contract.save()
   }
 
   token.owner = to.id

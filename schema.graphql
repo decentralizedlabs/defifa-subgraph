@@ -35,14 +35,14 @@ type Owner @entity {
 }
 
 type Contract @entity {
-  id: Bytes!
+  id: ID!
+  address: Bytes!
+  gameId: BigInt!
+  governor: Bytes!
+  creator: Bytes!
+  tokenUriResolver: Bytes!
   name: String
   symbol: String
   totalSupply: BigInt!
   mintedTokens: [Token!]! @derivedFrom(field: "contract")
-}
-
-type DefifaNFT @entity {
-  id: ID!
-  contract: Contract!
 }

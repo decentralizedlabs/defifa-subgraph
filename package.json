@@ -1,16 +1,17 @@
 {
-  "name": "fairlunch",
+  "name": "defifa-goerli",
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ fairlunch",
-    "create-local": "graph create --node http://localhost:8020/ fairlunch",
-    "remove-local": "graph remove --node http://localhost:8020/ fairlunch",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 fairlunch"
+    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ defifa-goerli",
+    "create-local": "graph create --node http://localhost:8020/ defifa-goerli",
+    "remove-local": "graph remove --node http://localhost:8020/ defifa-goerli",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 defifa-goerli"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "^0.41.1",
-    "@graphprotocol/graph-ts": "^0.29.3"
+    "": "^@graphprotocol/graph-ts0.29.3",
+    "@graphprotocol/graph-cli": "^0.49.0",
+    "@graphprotocol/graph-ts": "^0.30.0"
   }
 }

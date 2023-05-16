@@ -4,31 +4,25 @@ schema:
 description: 0.1.1
 dataSources:
   - kind: ethereum
-    name: FairLunch
+    name: DefifaDeployer
     network: goerli
     source:
-      abi: FairLunch
-      address: "0xdc1b66c81663410e2C8aC06D613CFaeB9693aA3e"
-      startBlock: 7919957
+      abi: DefifaDeployer
+      address: "0x5e49F480f2Cdf6e638d0aBB7faa703e6aBAD46d1"
+      startBlock: 9006943
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - Token
-        - TokenMetadata
-        - Owner
-        - Transfer
         - Contract
       abis:
-        - name: FairLunch
-          file: ./abis/FairLunch.json
+        - name: DefifaDeployer
+          file: ./abis/DefifaDeployer.json
       eventHandlers:
-        - event: CrumbsWereSwept(indexed uint256,indexed uint256,uint256,uint256,address)
-          handler: handleCrumbsWereSwept
-        - event: LunchWasServed(indexed uint256,indexed uint256,uint256,uint256,uint256,address)
-          handler: handleLunchWasServed
-      file: ./src/mappings/fairlunch.ts
+        - event: LaunchGame(indexed uint256,indexed address,indexed address,address,address)
+          handler: handleLaunchGame
+      file: ./src/mappings/defifa-deployer.ts
 templates:
   - name: DefifaNFT
     kind: ethereum/contract
