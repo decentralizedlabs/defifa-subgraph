@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "": "^@graphprotocol/graph-ts0.29.3",
+    "@amxx/graphprotocol-utils": "^1.1.0",
     "@graphprotocol/graph-cli": "^0.49.0",
     "@graphprotocol/graph-ts": "^0.30.0"
   }

@@ -20,6 +20,20 @@ export class DefifaNFT extends DataSourceTemplate {
   }
 }
 
+export class Governor extends DataSourceTemplate {
+  static create(address: Address): void {
+    DataSourceTemplate.create("Governor", [address.toHex()]);
+  }
+
+  static createWithContext(address: Address, context: DataSourceContext): void {
+    DataSourceTemplate.createWithContext(
+      "Governor",
+      [address.toHex()],
+      context
+    );
+  }
+}
+
 export class TokenMetadata extends DataSourceTemplate {
   static create(cid: string): void {
     DataSourceTemplate.create("TokenMetadata", [cid]);

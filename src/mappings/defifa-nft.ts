@@ -16,7 +16,7 @@ export function handleTransfer(event: TransferEvent): void {
   let tokenId = event.params.tokenId.toString()
   let to = getOrCreateOwner(event.params.to)
   let from = getOrCreateOwner(event.params.from)
-  let contract = Contract.load(event.address.toHex())!
+  let contract = Contract.load(event.address)!
   let instance = DefifaNFT.bind(event.address)
   let token = Token.load(tokenId)
 

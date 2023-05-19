@@ -1,8 +1,17 @@
 import { BigInt, DataSourceContext } from "@graphprotocol/graph-ts"
 import { LaunchGame as LaunchGameEvent } from "../../generated/DefifaDeployer/DefifaDeployer"
-import { Contract as ContractEntity } from "../../generated/schema"
-import { DefifaNFT as Contract } from "../../generated/templates"
+import {
+  Contract as ContractEntity,
+  Governor,
+  Account
+} from "../../generated/schema"
+import {
+  DefifaNFT as Contract,
+  Governor as GovernorInstance
+} from "../../generated/templates"
+
 import { DefifaNFT } from "../../generated/templates/DefifaNFT/DefifaNFT"
+import { Governor as GovernorContract } from "../../generated/templates/Governor/Governor"
 
 export function handleLaunchGame(event: LaunchGameEvent): void {
   let caller = event.params.caller
@@ -11,7 +20,9 @@ export function handleLaunchGame(event: LaunchGameEvent): void {
   let governor = event.params.governor
   let tokenUriResolver = event.params.tokenUriResolver
 
-  let contract = new ContractEntity(delegate.toHex())
+  let contract = new ContractEntity(delegate)
+  let governorContract = new Governor(governor)
+  let governorAccount = new Account(governor)
 
   // let instance = DefifaNFT.bind(event.params.delegate)
 
@@ -33,7 +44,22 @@ export function handleLaunchGame(event: LaunchGameEvent): void {
 
   contract.save()
 
-  let context = new DataSourceContext()
-  context.setBigInt("gameId", gameId)
-  Contract.createWithContext(delegate, context)
+  // const COUNTING_MODE = GovernorContract.bind(governor).try_COUNTING_MODE()
+  governorContract.asAccount = governor
+  governorContract.defifaContract = delegate
+  // if (!COUNTING_MODE.reverted) {
+  //   governorContract.mode = COUNTING_MODE.value
+  // }
+  governorContract.save()
+
+  governorAccount.asGovernor = governor
+  governorAccount.save()
+
+  let defifaContractContext = new DataSourceContext()
+  defifaContractContext.setBigInt("gameId", gameId)
+  Contract.createWithContext(delegate, defifaContractContext)
+
+  let governorContext = new DataSourceContext()
+  governorContext.setBigInt("gameId", gameId)
+  GovernorInstance.createWithContext(governor, governorContext)
 }
