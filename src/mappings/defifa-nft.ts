@@ -1,9 +1,22 @@
-import { Address, BigInt, DataSourceContext } from "@graphprotocol/graph-ts"
+import {
+  Address,
+  BigInt,
+  Bytes,
+  dataSource,
+  json
+} from "@graphprotocol/graph-ts"
 import {
   Transfer as TransferEvent,
   DefifaNFT
 } from "../../generated/templates/DefifaNFT/DefifaNFT"
-import { Transfer, Owner, Contract, Token } from "../../generated/schema"
+import {
+  Transfer,
+  Owner,
+  Contract,
+  Token,
+  TokenMetadata
+} from "../../generated/schema"
+import { decode } from "as-base64"
 import { TokenMetadata as TokenMetadataTemplate } from "../../generated/templates"
 
 export function handleTransfer(event: TransferEvent): void {
@@ -18,7 +31,7 @@ export function handleTransfer(event: TransferEvent): void {
   let from = getOrCreateOwner(event.params.from)
   let contract = Contract.load(event.address)!
   let instance = DefifaNFT.bind(event.address)
-  let token = Token.load(tokenId)
+  let token = Token.load(event.address.toHexString() + "-" + tokenId)
 
   // Do not go to minus with null-address
   if (from.balance > BigInt.fromI32(0)) {
@@ -28,19 +41,50 @@ export function handleTransfer(event: TransferEvent): void {
   to.balance = to.balance.plus(BigInt.fromI32(1))
 
   if (token == null) {
-    token = new Token(tokenId)
+    const tokenFullId = event.address.toHexString() + "-" + tokenId
+    token = new Token(tokenFullId)
     token.number = event.params.tokenId
     token.contract = contract.id
     let uri = instance.try_tokenURI(event.params.tokenId)
     if (!uri.reverted) {
       token.uri = uri.value
-      const dataSourceContext = new DataSourceContext()
-      dataSourceContext.setBigInt("tokenId", event.params.tokenId)
-      TokenMetadataTemplate.createWithContext(
-        uri.value.substring(7),
-        dataSourceContext
-      )
+
+      if (uri.value.startsWith("data:application/json;base64,")) {
+        let tokenMetadata = new TokenMetadata(tokenFullId)
+        tokenMetadata.token = tokenFullId
+
+        const metaString = Bytes.fromUint8Array(decode(uri.value.substring(29)))
+        const value = json.fromBytes(metaString).toObject()
+
+        if (value) {
+          const image = value.get("image")
+          const name = value.get("name")
+          const description = value.get("description")
+          const identifier = value.get("identifier")
+          const tags = value.get("tags")
+
+          if (name) tokenMetadata.name = name.toString()
+          if (image) tokenMetadata.image = image.toString()
+          if (description) tokenMetadata.description = description.toString()
+          if (identifier) tokenMetadata.identifier = identifier.toBigInt()
+          if (tags)
+            tokenMetadata.tags = tags
+              .toArray()
+              .map<string>((tag) => tag.toString())
+        }
+
+        tokenMetadata.save()
+      } else if (uri.value.startsWith("ipfs://")) {
+        const datasourceContext = dataSource.context()
+        datasourceContext.setString("tokenId", tokenId)
+        datasourceContext.setString("contract", event.address.toHexString())
+        TokenMetadataTemplate.createWithContext(
+          uri.value.substring(7),
+          datasourceContext
+        )
+      }
     }
+
     contract.totalSupply = contract.totalSupply.plus(BigInt.fromI32(1))
     contract.save()
   }

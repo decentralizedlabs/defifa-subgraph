@@ -20,12 +20,12 @@ type Token @entity {
 
 type TokenMetadata @entity {
   id: ID!
-  name: String!
-  identifier: BigInt!
-  description: String!
-  tags: [String!]!
-  image: String!
   token: Token!
+  name: String
+  identifier: BigInt
+  description: String
+  tags: [String!]
+  image: String
 }
 
 type Owner @entity {

@@ -284,71 +284,6 @@ export class TokenMetadata extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get name(): string {
-    let value = this.get("name");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toString();
-    }
-  }
-
-  set name(value: string) {
-    this.set("name", Value.fromString(value));
-  }
-
-  get identifier(): BigInt {
-    let value = this.get("identifier");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set identifier(value: BigInt) {
-    this.set("identifier", Value.fromBigInt(value));
-  }
-
-  get description(): string {
-    let value = this.get("description");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toString();
-    }
-  }
-
-  set description(value: string) {
-    this.set("description", Value.fromString(value));
-  }
-
-  get tags(): Array<string> {
-    let value = this.get("tags");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toStringArray();
-    }
-  }
-
-  set tags(value: Array<string>) {
-    this.set("tags", Value.fromStringArray(value));
-  }
-
-  get image(): string {
-    let value = this.get("image");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toString();
-    }
-  }
-
-  set image(value: string) {
-    this.set("image", Value.fromString(value));
-  }
-
   get token(): string {
     let value = this.get("token");
     if (!value || value.kind == ValueKind.NULL) {
@@ -360,6 +295,91 @@ export class TokenMetadata extends Entity {
 
   set token(value: string) {
     this.set("token", Value.fromString(value));
+  }
+
+  get name(): string | null {
+    let value = this.get("name");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set name(value: string | null) {
+    if (!value) {
+      this.unset("name");
+    } else {
+      this.set("name", Value.fromString(<string>value));
+    }
+  }
+
+  get identifier(): BigInt | null {
+    let value = this.get("identifier");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set identifier(value: BigInt | null) {
+    if (!value) {
+      this.unset("identifier");
+    } else {
+      this.set("identifier", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get description(): string | null {
+    let value = this.get("description");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set description(value: string | null) {
+    if (!value) {
+      this.unset("description");
+    } else {
+      this.set("description", Value.fromString(<string>value));
+    }
+  }
+
+  get tags(): Array<string> | null {
+    let value = this.get("tags");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set tags(value: Array<string> | null) {
+    if (!value) {
+      this.unset("tags");
+    } else {
+      this.set("tags", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+
+  get image(): string | null {
+    let value = this.get("image");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set image(value: string | null) {
+    if (!value) {
+      this.unset("image");
+    } else {
+      this.set("image", Value.fromString(<string>value));
+    }
   }
 }
 
