@@ -1,4 +1,4 @@
-import { Bytes, dataSource, json, log } from "@graphprotocol/graph-ts"
+import { Bytes, dataSource, json } from "@graphprotocol/graph-ts"
 
 import { TokenMetadata } from "../../generated/schema"
 
