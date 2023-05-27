@@ -8,7 +8,7 @@ dataSources:
     network: goerli
     source:
       abi: DefifaDeployer
-      address: "0x47f699C71B3dfB25299dE9a22f1ad01774EA91A1"
+      address: "0x2304C37e0727cd4F3e89Be2bc695e3D0f118df1c"
       startBlock: 9022149
     mapping:
       kind: ethereum/events
