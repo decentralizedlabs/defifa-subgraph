@@ -9,7 +9,7 @@ dataSources:
     source:
       abi: DefifaDeployer
       address: "0x17cABd6BC8679954476961c73b88f5888F8FF708"
-      startBlock: 9022149
+      startBlock: 9082549
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
